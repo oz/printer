@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+# encoding: utf-8
+
+xml_file = ARGV[0] || abort("Missing file argument")
+
+puts 'Loading...'
+require File.expand_path '../../conf/boot', __FILE__
+
+puts 'Importing...'
+Job.import_file! xml_file
