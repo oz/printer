@@ -1,5 +1,8 @@
 source 'http://rubygems.org'
 
+gem 'em-synchrony'
+gem 'mongo'
+
 gem 'nokogiri'
 gem 'will_paginate'
 gem 'mongoid'
