@@ -11,6 +11,7 @@ require 'mongoid' # meh... this takes like forever. :(
 ENV['RACK_ENV'] ||= 'development'
 Mongoid.load! "#{PRINTER_ROOT}/conf/mongoid.yml"
 
+require 'will_paginate'
 require 'sinatra'
 require 'haml'
 

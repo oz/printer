@@ -1,4 +1,5 @@
 # encoding: utf-8
+
 class Job
   include Mongoid::Document
 
