@@ -6,16 +6,15 @@ $:.unshift "#{PRINTER_ROOT}/lib"
 $:.unshift "#{PRINTER_ROOT}/app"
 $:.unshift "#{PRINTER_ROOT}/app/models"
 
-require 'will_paginate'
-require 'sinatra/async'
+require 'sinatra'
+require 'sinatra/synchrony'
 require 'haml'
+require 'mongoid'
+require 'will_paginate'
 
-require 'mongo'
-require 'em-synchrony'
-require 'mongoid' # meh... this takes like forever. :(
+ENV['RACK_ENV'] ||= 'development'
 
 # Mongoid config
-ENV['RACK_ENV'] ||= 'development'
 Mongoid.load! "#{PRINTER_ROOT}/conf/mongoid.yml"
 Mongoid.logger = nil if ENV['RACK_ENV'] == 'production'
 

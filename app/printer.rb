@@ -1,15 +1,15 @@
 # encoding: utf-8
 
 class Printer < Sinatra::Base
-  register Sinatra::Async
+  register Sinatra::Synchrony
 
   set :root, PRINTER_ROOT + '/app'
   set :public, PRINTER_ROOT + '/app/static'
 
   ##
   # Homepage
-  aget '/' do
-    body haml(:index)
+  get '/' do
+    haml :index
   end
 
   # --------------------------------------------------------------------------
@@ -25,18 +25,17 @@ class Printer < Sinatra::Base
 
   ##
   # List all jobs
-  aget '/jobs' do
+  get '/jobs' do
     jobs = Job.all
     jobs = filter_by_dates(jobs)
-    body paginate(jobs).to_json
+    paginate(jobs).to_json
   end
 
   ##
   # List known job types, also known as their kind.
-  aget '/job_kinds' do
+  get '/job_kinds' do
     # FIXME there is map/reduce within MongoDB: Use Job.map_reduce.
-    body Job.all.map(&:kind).sort.uniq.to_json
-    #body %w(copy print scan).to_json
+    Job.all.map(&:kind).sort.uniq.to_json
   end
 
   ##
@@ -48,10 +47,10 @@ class Printer < Sinatra::Base
   # GET /jobs/where/kind/print
   # GET /jobs/where/owner/oz
   # GET /jobs/where/some_field/some_value
-  aget '/jobs/where/:key/:value' do |key, value|
+  get '/jobs/where/:key/:value' do |key, value|
     jobs = Job.where(key.to_sym => value)
     jobs = filter_by_dates(jobs)
-    body paginate(jobs).to_json
+    paginate(jobs).to_json
   end
 
   protected
