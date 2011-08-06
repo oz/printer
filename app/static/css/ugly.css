@@ -1,0 +1,34 @@
+/**
+ * Base elements
+ */
+* { margin:0; padding: 0; }
+body {
+  background: white;
+  color: black;
+}
+h1 {
+  background: #ececec;
+  font: 24px "Helvetica" sans-serif;
+  margin-bottom: 16px;
+}
+
+/**
+ * Class specific
+ */
+.main {
+  width: 95%;
+  margin: 32px auto;
+}
+.chart {
+  font: 10px sans-serif;
+}
+.chart rect {
+  stroke: white;
+  fill: steelblue;
+}
+.chart text {
+  fill: white
+}
+.chart text.rule {
+  fill: black
+}

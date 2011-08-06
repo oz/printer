@@ -1,5 +1,10 @@
 !!!5
 %head
   %title Printer
+  %link{rel: "stylesheet", type: "text/css", href: "/css/ugly.css", media: "screen"}
 %body
   =yield
+  %script{type: "text/javascript", src: "/js/vendor/jquery.js"}
+  %script{type: "text/javascript", src: "/js/vendor/date.js"}
+  %script{type: "text/javascript", src: "/js/vendor/d3/d3.min.js"}
+  %script{type: "text/javascript", src: "/js/app.js"}

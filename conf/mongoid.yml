@@ -1,6 +1,6 @@
 development:
   host: localhost
-  database: printer_dev
+  database: printer
 
 test:
   host: localhost
@@ -13,4 +13,4 @@ staging:
 # set these environment variables on your prod server
 production:
   host: localhost
-  database: printer_dev
+  database: printer

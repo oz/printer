@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 class Printer < Sinatra::Base
-  register Sinatra::Synchrony
+  #register Sinatra::Synchrony
 
   set :root, PRINTER_ROOT + '/app'
   set :public, PRINTER_ROOT + '/app/static'

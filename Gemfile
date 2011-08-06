@@ -1,12 +1,11 @@
 source 'http://rubygems.org'
 
+gem 'eventmachine', '1.0.0.beta.3'
 gem 'em-synchrony'
-gem 'mongo'
-
 gem 'nokogiri'
-gem 'will_paginate'
-gem 'mongoid'
 gem 'bson_ext'
+gem 'mongoid'
+gem 'will_paginate'
 gem 'sinatra'
 gem 'sinatra-synchrony'
 gem 'haml'

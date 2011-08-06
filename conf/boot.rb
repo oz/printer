@@ -7,7 +7,7 @@ $:.unshift "#{PRINTER_ROOT}/app"
 $:.unshift "#{PRINTER_ROOT}/app/models"
 
 require 'sinatra'
-require 'sinatra/synchrony'
+#require 'sinatra/synchrony'
 require 'haml'
 require 'mongoid'
 require 'will_paginate'
