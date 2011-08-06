@@ -12,7 +12,7 @@ ENV['RACK_ENV'] ||= 'development'
 Mongoid.load! "#{PRINTER_ROOT}/conf/mongoid.yml"
 
 require 'will_paginate'
-require 'sinatra'
+require 'sinatra/async'
 require 'haml'
 
 # Application stuff... autoload anyone?
