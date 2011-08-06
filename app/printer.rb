@@ -6,16 +6,16 @@ class Printer < Sinatra::Base
   set :root, PRINTER_ROOT + '/app'
   set :public, PRINTER_ROOT + '/app/static'
 
-  # Bla bla...
+  ##
+  # Homepage
   aget '/' do
     body haml(:index)
   end
 
   # --------------------------------------------------------------------------
   # JSON methods
-  before do
-    #layout false
 
+  before do
     # Parse date params
     params[:before] = DateTime.parse(params[:before]).to_time if params[:before]
     params[:after]  = DateTime.parse(params[:after]).to_time  if params[:after]
@@ -23,6 +23,7 @@ class Printer < Sinatra::Base
 
   provides :json
 
+  ##
   # List all jobs
   aget '/jobs' do
     jobs = Job.all
@@ -30,25 +31,25 @@ class Printer < Sinatra::Base
     body paginate(jobs).to_json
   end
 
+  ##
   # List known job types, also known as their kind.
-  #
-  # GET /job_types
-  # GET /job_kinds
-  get /\/job_(type|kind)s/ do
+  aget '/job_kinds' do
     # FIXME there is map/reduce within MongoDB: Use Job.map_reduce.
     body Job.all.map(&:kind).sort.uniq.to_json
+    #body %w(copy print scan).to_json
   end
 
+  ##
   # Filter jobs on a given field/value.  This is rather dangerous and
   # ill-advised security-wise, but the app is still at pre-alpha stage and
   # should not be a public API either...  The correct way is to implement this
   # as a private method, and declare public APIs around it. -- oz
   #
-  # GET /jobs/by_kind/print
-  # GET /jobs/by_owner/oz
-  # GET /jobs/by_some_field/some_value
-  get '/jobs/by_:key/:value' do
-    jobs = Job.where(params[:key].to_sym => params[:value])
+  # GET /jobs/where/kind/print
+  # GET /jobs/where/owner/oz
+  # GET /jobs/where/some_field/some_value
+  aget '/jobs/where/:key/:value' do |key, value|
+    jobs = Job.where(key.to_sym => value)
     jobs = filter_by_dates(jobs)
     body paginate(jobs).to_json
   end
@@ -77,6 +78,4 @@ class Printer < Sinatra::Base
     list = list.created_before(params[:before]) if params[:before]
     list
   end
-
-
 end
