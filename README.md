@@ -32,8 +32,6 @@ to export `RACK_ENV=production`.
 Importing printer log files
 ---------------------------
 
-Write me!
-
 Run `bundle exec bin/sync /path/to/logfile.xml` to import a printer log
 file in the system.
 
