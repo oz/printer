@@ -3,11 +3,11 @@
  */
 * { margin:0; padding: 0; }
 body {
-  background: white;
-  color: black;
+  background: #F6F8EE;
+  color: #121310;
 }
 h1 {
-  background: #ececec;
+  color: #F6F8EE
   font: 24px "Helvetica" sans-serif;
   margin-bottom: 16px;
 }
@@ -22,13 +22,17 @@ h1 {
 .chart {
   font: 10px sans-serif;
 }
-.chart rect {
-  stroke: white;
-  fill: steelblue;
+.chart rect.print {
+  stroke: #899752;
+  fill: #D6E68A;
+}
+.chart rect.copy {
+  stroke: #899752;
+  fill: #e6f69A;
 }
 .chart text {
-  fill: white
+  fill: #121310;
 }
 .chart text.rule {
-  fill: black
+  fill: #899752;
 }

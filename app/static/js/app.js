@@ -1,11 +1,13 @@
 (function() {
   $(function() {
-    var daily_count, draw_daily, end_date, fetch_jobs, interval, jobs_path, start_date, title;
-    interval = 30;
+    var chart, daily_count, draw_bottom_line, draw_daily, end_date, fetch_jobs, graph_height, init_chart, interval, jobs_path, start_date, title;
+    interval = 1;
     end_date = Date.today().add(1).days();
-    start_date = Date.today().add(-interval).days();
-    jobs_path = '/jobs/where/kind/print';
-    fetch_jobs = function(start, end, cb) {
+    start_date = Date.today().add(-interval).months();
+    jobs_path = '/jobs/where/kind/';
+    graph_height = 400;
+    chart = null;
+    fetch_jobs = function(start, end, kind, cb) {
       var after_date, before_date, fetch_page, jobs, pages;
       pages = 0;
       jobs = [];
@@ -21,7 +23,7 @@
           before: before_date,
           after: after_date
         };
-        path = jobs_path + '?' + $.param(request_params);
+        path = jobs_path + kind + '?' + $.param(request_params);
         return $.ajax({
           url: path,
           success: function(data, state, req) {
@@ -56,8 +58,24 @@
       });
       return jobs;
     };
-    draw_daily = function(jobs, node) {
-      var chart, data, h, k, scale_x, scale_y, values, w;
+    init_chart = function(node, h, w, x, y, data_size) {
+            if (chart != null) {
+        chart;
+      } else {
+        chart = d3.select(node).append("svg:svg").attr("class", "chart").attr("width", w * data_size - 1).attr("height", h);
+      };
+      d3.select(".content").append("svg:svg").attr("class", "chart").attr("width", w * data_size - 1).attr("height", h).append("svg:g").attr("transform", "translate(15,10)");
+      chart.selectAll("line").data(y.ticks(5)).enter().append("svg:line").attr("x1", 0).attr("x2", w * data_size - 1).attr("y1", y).attr("y2", y).attr("stroke", "#ccc");
+      return chart;
+    };
+    draw_bottom_line = function(chart, width, height) {
+      return chart.append("svg:line").attr("x1", 0).attr("x2", width).attr("y1", height).attr("y2", height).attr("stroke", "#000");
+    };
+    draw_daily = function(jobs, node, kind, prev_jobs) {
+      var cumulated_value, data, h, k, values, w, x, y;
+      if (prev_jobs == null) {
+        prev_jobs = null;
+      }
       data = (function() {
         var _i, _len, _ref, _results;
         _ref = Object.keys(jobs);
@@ -80,33 +98,49 @@
         }
         return _results;
       })();
-      h = 300;
+      h = graph_height;
       w = 25;
-      scale_x = d3.scale.linear().domain([0, 1]).range([0, w]);
-      scale_y = d3.scale.linear().domain([0, d3.max(values)]).rangeRound([0, h]);
-      chart = d3.select(node).append("svg:svg").attr("class", "chart").attr("width", w * data.length - 1).attr("height", h);
-      d3.select(".content").append("svg:svg").attr("class", "chart").attr("width", w * data.length - 1).attr("height", h).append("svg:g").attr("transform", "translate(15,10)");
-      chart.selectAll("line").data(scale_y.ticks(5)).enter().append("svg:line").attr("x1", 0).attr("x2", w * data.length - 1).attr("y1", scale_y).attr("y2", scale_y).attr("stroke", "#ccc");
-      chart.selectAll("rect").data(data).enter().append("svg:rect").attr("x", function(d, i) {
-        return scale_x(i) - .5;
-      }).attr("y", function(d) {
-        return h - scale_y(d.value) - .5;
-      }).attr('width', w).attr('height', function(d) {
-        return scale_y(d.value);
+      x = d3.scale.linear().domain([0, 1]).range([0, w]);
+      y = d3.scale.linear().domain([0, 800]).rangeRound([0, h - 5]);
+            if (chart != null) {
+        chart;
+      } else {
+        chart = init_chart(node, h, w, x, y, data.length);
+      };
+      cumulated_value = function(d, i) {
+        var prev_height, v, y_coord;
+        v = d.value;
+        y_coord = h - y(v) - .5;
+        if (prev_jobs != null) {
+          prev_height = y(prev_jobs[Object.keys(prev_jobs)[i]]);
+          y_coord -= prev_height;
+        }
+        return y_coord;
+      };
+      chart.selectAll("rect." + kind).data(data).enter().append("svg:rect").attr("class", kind).attr("x", function(d, i) {
+        return x(i) - .5;
+      }).attr("y", function(d, i) {
+        return cumulated_value(d, i);
+      }).attr("width", w).attr("title", function(d, i) {
+        var job_date;
+        job_date = Object.keys(jobs)[i];
+        return job_date + " - " + jobs[job_date];
+      }).attr("height", function(d) {
+        return y(d.value);
       });
-      chart.append("svg:line").attr("x1", 0).attr("x2", w * data.length).attr("y1", h - .5).attr("y2", h - .5).attr("stroke", "#000");
-      return chart.selectAll("text").data(data).enter().append("svg:text").attr("x", function(d, i) {
-        return scale_x(i) - .5;
+      chart.selectAll("text").data(data).enter().append("svg:text").attr("x", function(d, i) {
+        return x(i) - .5;
       }).attr("y", function(d) {
-        return h - scale_y(d.value) + 12;
+        return h - y(d.value) + 12;
       }).attr("dx", 3).text(function(x) {
         return x.value;
       });
+      return draw_bottom_line(chart, w * data.length, h - .5);
     };
     title = $('h1').text();
     $('h1').text(title + ' between: ' + start_date.toString('dd/MM/yyyy') + ' and ' + end_date.toString('dd/MM/yyyy'));
     console.log("Fetching jobs between " + start_date + " and " + end_date);
-    return fetch_jobs(start_date, end_date, function(list) {
+    return fetch_jobs(start_date, end_date, 'print', function(list) {
       var jobs, x;
       console.log("Fetched " + list.length + " jobs.");
       jobs = daily_count((function() {
@@ -117,8 +151,23 @@
           _results.push([Date.parse(x.created_at), x.copy_num * x.doc_num]);
         }
         return _results;
-      })(), start_date, end_date);
-      return draw_daily(jobs, ".graph");
+      })(), start_date.clone(), end_date.clone());
+      draw_daily(jobs, ".graph", "print");
+      return fetch_jobs(start_date, end_date, 'copy', function(list) {
+        var prev_jobs, x;
+        console.log("Fetched " + list.length + " jobs.");
+        prev_jobs = jobs;
+        jobs = daily_count((function() {
+          var _i, _len, _results;
+          _results = [];
+          for (_i = 0, _len = list.length; _i < _len; _i++) {
+            x = list[_i];
+            _results.push([Date.parse(x.created_at), x.copy_num * x.doc_num]);
+          }
+          return _results;
+        })(), start_date.clone(), end_date.clone());
+        return draw_daily(jobs, ".graph", "copy", prev_jobs);
+      });
     });
   });
 }).call(this);
