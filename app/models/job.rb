@@ -12,7 +12,8 @@ class Job
   scope :created_before, proc { |date| where(:created_at.lt => date) if date }
   scope :created_after,  proc { |date| where(:created_at.gt => date) if date }
 
-  def self.per_page; 100; end
+  cattr_accessor :per_page
+  self.per_page = 50
 
   # Import an Printer loug file.
   #

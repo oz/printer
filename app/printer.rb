@@ -19,6 +19,10 @@ class Printer < Sinatra::Base
     # Parse date params
     params[:before] = DateTime.parse(params[:before]).to_time if params[:before]
     params[:after]  = DateTime.parse(params[:after]).to_time  if params[:after]
+
+    # Paginate per 100000 jobs per default, ie. get everything once and for
+    # all. Feel free to specfify per_page=10 when debugging.
+    Job.per_page = params[:per_page] || 10000
   end
 
   provides :json
