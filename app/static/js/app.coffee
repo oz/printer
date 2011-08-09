@@ -1,8 +1,8 @@
 # Hang on, it's quite the mess...
 $ ->
-  interval     = 30
+  interval     = 1
   end_date     = Date.today().add(1).days()
-  start_date   = Date.today().add(- interval).days()
+  start_date   = Date.today().add(- interval).months()
   jobs_path    = '/jobs/where/kind/print'
 
   ##
