@@ -1,5 +1,11 @@
-source 'http://rubygems.org'
+source :rubygems
 
+# Framework
+gem 'cramp'
+gem 'haml'
+gem 'http_router'
+
+# Libs
 gem 'eventmachine', '1.0.0.beta.3'
 gem 'em-synchrony'
 gem 'nokogiri'
@@ -7,13 +13,8 @@ gem 'nokogiri'
 # Doc mapper
 gem 'bson_ext'
 gem 'mongoid'
-gem 'will_paginate'
-
-# Framework
-gem 'sinatra'
-gem 'sinatra-synchrony'
-gem 'haml'
 
 # HTTP Server
 gem 'thin'
-gem 'rack-cache'
+gem 'async-rack'
+gem 'rack-cache', :require => 'rack/cache'

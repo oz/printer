@@ -2,9 +2,9 @@
 # encoding: utf-8
 
 xml_file = ARGV[0] || abort("Missing file argument")
+puts "Importing from #{ xml_file }"
 
-puts 'Loading...'
-require File.expand_path '../../conf/boot', __FILE__
-
-puts 'Importing...'
+ENV['RACK_ENV'] ||= 'development'
+require File.expand_path '../../application', __FILE__
+Printer::Application.initialize!
 Job.import_file! xml_file

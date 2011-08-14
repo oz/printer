@@ -1,9 +1,24 @@
-require ::File.expand_path '../conf/boot',  __FILE__
-require 'rack/cache'
+#require ::File.expand_path '../conf/boot',  __FILE__
+require './application'
+Printer::Application.initialize!
 
-use Rack::Cache,
-  :verbose     => ENV['RACK_ENV'] == 'development',
-  :metastore   => "file:#{PRINTER_ROOT}/tmp/cache/rack/meta",
-  :entitystore => "file:#{PRINTER_ROOT}/tmp/cache/rack/body"
+# Development middlewares
+if Printer::Application.env == 'development'
+  use AsyncRack::CommonLogger
 
-run Printer
+  # Enable code reloading on every request
+  use Rack::Reloader, 0
+
+  # Serve assets from /public
+  use Rack::Static,
+      :urls => ["/js", "/css"],
+      :root => Printer::Application.root(:public)
+end
+
+#require 'rack/cache'
+#use Rack::Cache,
+#  :verbose     => ENV['RACK_ENV'] == 'development',
+#  :metastore   => "file:#{PRINTER_ROOT}/tmp/cache/rack/meta",
+#  :entitystore => "file:#{PRINTER_ROOT}/tmp/cache/rack/body"
+
+run Printer::Application.routes

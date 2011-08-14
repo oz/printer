@@ -2,6 +2,10 @@
 # encoding: utf-8
 
 puts 'Loading...'
+ENV['RACK_ENV'] ||= 'development'
+
 require 'irb'
-require File.expand_path '../../conf/boot', __FILE__
+require File.expand_path '../../application', __FILE__
+
+Printer::Application.initialize!
 IRB.start
