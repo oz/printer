@@ -8,17 +8,19 @@ if Printer::Application.env == 'development'
 
   # Enable code reloading on every request
   use Rack::Reloader, 0
-
-  # Serve assets from /public
-  use Rack::Static,
-      :urls => ["/js", "/css"],
-      :root => Printer::Application.root(:public)
 end
 
-#require 'rack/cache'
-#use Rack::Cache,
-#  :verbose     => ENV['RACK_ENV'] == 'development',
-#  :metastore   => "file:#{PRINTER_ROOT}/tmp/cache/rack/meta",
-#  :entitystore => "file:#{PRINTER_ROOT}/tmp/cache/rack/body"
+if Printer::Application.env == 'production'
+  use Rack::Cache,
+    :verbose     => ENV['RACK_ENV'] == 'development',
+    :metastore   => "file:#{Printer::Application.root}/tmp/cache/rack/meta",
+    :entitystore => "file:#{Printer::Application.root}/tmp/cache/rack/body"
+end
+
+# Serve assets from /public
+# XXX not using a proxy to serve these is kinda bad y'know.
+use Rack::Static,
+  :urls => ['/js', '/css'],
+  :root => Printer::Application.root(:public)
 
 run Printer::Application.routes

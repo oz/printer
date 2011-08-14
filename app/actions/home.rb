@@ -10,8 +10,8 @@ class Home < Cramp::Action
 
   def haml(template)
     # Template paths
-    tpl_path    = Printer::Application.root + "/app/views/#{ template }.haml"
-    layout_path = Printer::Application.root + "/app/views/layout.haml"
+    tpl_path    = Printer::Application.views + "/#{ template }.haml"
+    layout_path = Printer::Application.views + "/layout.haml"
 
     # Read files
     tpl_data    = File.read(tpl_path)
