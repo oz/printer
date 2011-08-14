@@ -2,7 +2,6 @@
 
 class Home < Cramp::Action
   def start
-    p Job.first
     render haml(:index)
     finish
   end
